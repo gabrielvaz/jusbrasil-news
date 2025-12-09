@@ -1,26 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --font-sans: "Inter", sans-serif;
 
-@theme inline {
+  /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Radius */
+  /* Radius */
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-md: var(--radius);
+  --radius-sm: calc(var(--radius) - 2px);
+
+  /* Chart Colors (Preserving existing shadcn charts if needed, mapped to Farol palette or kept separate? 
+       The prompt didn't specify charts, but I should probably keep them or define safe defaults. 
+       The prompt REPLACED the file, so I will strictly follow the provided content, 
+       but I might add back specific shadcn animations if they break. 
+       Actually the prompt said "Replace your main CSS file content". 
+       I will use exactly what was given + the key @theme block provided.
+    */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base Variables */
+:root {
+  /* Base / Backgrounds */
+  --background: #FFFFFF;
+  --foreground: #0F172A;
+
+  /* Card */
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+
+  /* Popover */
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+
+  /* Primary (Brand Primary Pure) */
+  --primary: #007A5F;
+  --primary-foreground: #FFFFFF;
+
+  /* Secondary (Brand Secondary Pure) */
+  --secondary: #7AB441;
+  --secondary-foreground: #FFFFFF;
+
+  /* Muted */
+  --muted: #F1F5F9;
+  --muted-foreground: #5C6F8A;
+
+  /* Accent (Brand Tertiary Pure) */
+  --accent: #0474E2;
+  --accent-foreground: #FFFFFF;
+
+  /* Destructive (Feedback Negative Pure) */
+  --destructive: #E41E3F;
+  --destructive-foreground: #FFFFFF;
+
+  /* Border & Input */
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #007A5F;
+
+  /* Radius */
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Base / Backgrounds */
+  --background: #1B1C1E;
+  --foreground: #FFFFFF;
+
+  /* Card */
+  --card: #292B2E;
+  --card-foreground: #FFFFFF;
+
+  /* Popover */
+  --popover: #292B2E;
+  --popover-foreground: #FFFFFF;
+
+  /* Primary */
+  --primary: #00A37F;
+  --primary-foreground: #FFFFFF;
+
+  /* Secondary */
+  --secondary: #8CC256;
+  --secondary-foreground: #000000;
+
+  /* Muted */
+  --muted: #333538;
+  --muted-foreground: #AFB2B6;
+
+  /* Accent */
+  --accent: #2390FB;
+  --accent-foreground: #FFFFFF;
+
+  /* Destructive */
+  --destructive: #E94964;
+  --destructive-foreground: #FFFFFF;
+
+  /* Border & Input */
+  --border: #333538;
+  --input: #333538;
+  --ring: #00A37F;
+}
+
+/* Base Styles */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    position: relative;
+    overflow-x: hidden;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes aurora {
+  0% {
+    background-position: 50% 50%, 50% 50%;
+  }
+
+  100% {
+    background-position: 350% 50%, 350% 50%;
+  }
+}
+
+.aurora-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -20;
+  background-image:
+    radial-gradient(at 0% 0%, hsla(153, 40%, 94%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(153, 40%, 94%, 1) 0, transparent 50%);
+  background-size: 150% 150%;
+  animation: aurora 60s linear infinite;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.dark .aurora-bg {
+  background-image:
+    radial-gradient(at 0% 0%, hsla(153, 30%, 15%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(153, 30%, 15%, 1) 0, transparent 50%);
 }
