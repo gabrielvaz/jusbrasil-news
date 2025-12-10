@@ -47,7 +47,7 @@ export function HeroSection() {
           <div className="space-x-4">
             <Link href="/onboarding">
               <Button size="lg" className="h-12 px-8 text-lg">
-                Começar agora (é grátis)
+                Começar agora
               </Button>
             </Link>
           </div>

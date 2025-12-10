@@ -343,7 +343,6 @@ export function WizardForm() {
                         ) : (
                             <Button onClick={() => setSubmitted(true)} className="gap-2 px-8 bg-green-600 hover:bg-green-700 text-white">
                                 Finalizar cadastro
-                                <Check className="w-4 h-4" />
                             </Button>
                         )}
                     </>
@@ -353,7 +352,33 @@ export function WizardForm() {
     );
 }
 
+import confetti from "canvas-confetti";
+import { useEffect } from "react";
+
 function EmailPreview({ data }: { data: FormData }) {
+    useEffect(() => {
+        const duration = 3 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+        const random = (min: number, max: number) => Math.random() * (max - min) + min;
+
+        const interval: any = setInterval(function () {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+
+            const particleCount = 50 * (timeLeft / duration);
+            // since particles fall down, start a bit higher than random
+            confetti({ ...defaults, particleCount, origin: { x: random(0.1, 0.3), y: random(0.1, 0.2) } });
+            confetti({ ...defaults, particleCount, origin: { x: random(0.7, 0.9), y: random(0.1, 0.2) } });
+        }, 250);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -361,78 +386,61 @@ function EmailPreview({ data }: { data: FormData }) {
             className="w-full max-w-2xl mx-auto"
         >
             <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-4">
-                    <Check className="w-8 h-8" />
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 text-green-600 mb-6">
+                    <Check className="w-10 h-10" />
                 </div>
-                <h2 className="text-2xl font-bold mb-2">Tudo pronto!</h2>
-                <p className="text-muted-foreground">
-                    Você receberá seu primeiro resumo {data.frequency === 'daily' ? 'amanhã' : 'na próxima semana'}.
-                    <br />
-                    Veja abaixo uma prévia do que esperar na sua caixa de entrada:
+                <h2 className="text-3xl font-bold mb-4">Tudo pronto!</h2>
+                <p className="text-lg text-muted-foreground max-w-lg mx-auto">
+                    Excelente escolha. Personalizamos sua experiência com os dados abaixo:
                 </p>
             </div>
 
-            <div className="bg-white dark:bg-zinc-900 border rounded-xl shadow-lg overflow-hidden">
-                {/* Email Header Mock */}
-                <div className="bg-zinc-100 dark:bg-zinc-800 p-4 border-b flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">JB</div>
-                    <div>
-                        <div className="font-semibold text-sm">Jusbrasil News</div>
-                        <div className="text-xs text-muted-foreground">Para: {data.email}</div>
+            <div className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm overflow-hidden p-6 md:p-8 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">E-mail Cadastrado</p>
+                            <p className="text-lg font-semibold break-all">{data.email || "email@exemplo.com"}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Frequência</p>
+                            <p className="text-lg font-semibold">{data.frequency === 'daily' ? 'Diário' : 'Semanal'}</p>
+                        </div>
                     </div>
-                    <div className="ml-auto text-xs text-muted-foreground">Agora</div>
+                    <div className="space-y-4">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Áreas de Interesse</p>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                                {data.areas.length > 0 ? (
+                                    data.areas.map(area => (
+                                        <span key={area} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {area}
+                                        </span>
+                                    ))
+                                ) : (
+                                    <span className="text-gray-500">Nenhuma área selecionada</span>
+                                )}
+                            </div>
+                        </div>
+                        <div className="border-t pt-4 mt-2">
+                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Exemplo de Assunto</p>
+                            <p className="text-sm text-gray-600 italic mt-1">
+                                "Resumo {data.frequency === 'daily' ? 'Diário' : 'Semanal'}: Destaques em {data.areas[0] || 'Direito'} para você"
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Email Body */}
-                <div className="p-8 space-y-6">
-                    <div className="text-center pb-6 border-b">
-                        <h1 className="text-xl font-bold font-serif text-zinc-800 dark:text-zinc-100 mb-2">
-                            Seu Resumo Jurídico {data.frequency === 'daily' ? 'Diário' : 'Semanal'}
-                        </h1>
-                        <p className="text-sm text-muted-foreground">
-                            As principais atualizações em {data.areas.slice(0, 2).join(" e ")}.
-                        </p>
-                    </div>
-
-                    <div className="space-y-4">
-                        {/* Mock Article 1 */}
-                        <div className="group cursor-pointer">
-                            <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
-                                {data.areas[0] || "Geral"} • STJ
-                            </span>
-                            <h3 className="text-lg font-semibold mt-1 group-hover:text-blue-600 transition-colors">
-                                Nova decisão sobre prescrição intercorrente impacta processos trabalhistas
-                            </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
-                                A 3ª Turma uniformizou o entendimento sobre o marco inicial da contagem do prazo, estabelecendo que...
-                            </p>
-                        </div>
-
-                        {/* Mock Article 2 */}
-                        <div className="group cursor-pointer pt-4 border-t border-dashed">
-                            <span className="text-xs font-semibold text-green-600 uppercase tracking-wide">
-                                {data.areas[1] || "Jurisprudência"} • Migalhas
-                            </span>
-                            <h3 className="text-lg font-semibold mt-1 group-hover:text-blue-600 transition-colors">
-                                Avanços na regulamentação da IA no Judiciário
-                            </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
-                                Conselho Nacional de Justiça debate novas diretrizes para uso de ferramentas generativas em sentenças...
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="pt-6 border-t text-center">
-                        <Button variant="outline" size="sm" className="rounded-full">
-                            Ler resumo completo
-                        </Button>
-                    </div>
+                <div className="pt-6 border-t flex justify-center">
+                    <p className="text-sm text-center text-muted-foreground">
+                        Enviamos um e-mail de confirmação para sua caixa de entrada.
+                    </p>
                 </div>
             </div>
 
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-12">
                 <Link href="/">
-                    <Button variant="ghost" className="gap-2">
+                    <Button variant="ghost" className="gap-2 text-muted-foreground hover:text-foreground">
                         <ChevronLeft className="w-4 h-4" />
                         Voltar ao início
                     </Button>
