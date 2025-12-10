@@ -20,6 +20,11 @@ type FormData = {
     frequency: "daily" | "weekly";
 };
 
+type Source = {
+    name: string;
+    premium?: boolean;
+};
+
 const AREAS = [
     "Direito Civil",
     "Direito Trabalhista",
@@ -47,15 +52,19 @@ const THEMES_BY_AREA: Record<string, string[]> = {
     "default": ["Jurisprudência Recente", "Doutrina", "Legislação"]
 };
 
-const SOURCES = [
-    "Migalhas",
-    "JOTA",
-    "ConJur",
-    "Âmbito Jurídico",
-    "STF (Supremo Tribunal Federal)",
-    "STJ (Superior Tribunal de Justiça)",
-    "TST (Tribunal Superior do Trabalho)",
-    "Diários Oficiais"
+const SOURCES: Source[] = [
+    { name: "Migalhas" },
+    { name: "JOTA", premium: true },
+    { name: "ConJur", premium: true },
+    { name: "Revista LTr", premium: true },
+    { name: "Âmbito Jurídico" },
+    { name: "Blog Flávio Tartuce" },
+    { name: "IBDCivil" },
+    { name: "Guia Trabalhista" },
+    { name: "STF (Supremo Tribunal Federal)" },
+    { name: "STJ (Superior Tribunal de Justiça)" },
+    { name: "TST (Tribunal Superior do Trabalho)" },
+    { name: "Diários Oficiais" }
 ];
 
 export function WizardForm() {
@@ -95,11 +104,11 @@ export function WizardForm() {
         });
     };
 
-    const toggleSource = (source: string) => {
+    const toggleSource = (sourceName: string) => {
         setData(prev => {
-            const newSources = prev.sources.includes(source)
-                ? prev.sources.filter(s => s !== source)
-                : [...prev.sources, source];
+            const newSources = prev.sources.includes(sourceName)
+                ? prev.sources.filter(s => s !== sourceName)
+                : [...prev.sources, sourceName];
             return { ...prev, sources: newSources };
         });
     };
@@ -245,15 +254,22 @@ export function WizardForm() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                                 {SOURCES.map((source) => (
                                     <div
-                                        key={source}
-                                        className={`flex items-center space-x-3 border p-4 rounded-lg cursor-pointer transition-all ${data.sources.includes(source) ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'hover:bg-muted/50'}`}
-                                        onClick={() => toggleSource(source)}
+                                        key={source.name}
+                                        className={`flex items-center space-x-3 border p-4 rounded-lg cursor-pointer transition-all ${data.sources.includes(source.name) ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'hover:bg-muted/50'}`}
+                                        onClick={() => toggleSource(source.name)}
                                     >
                                         <Checkbox
-                                            checked={data.sources.includes(source)}
-                                            onCheckedChange={() => toggleSource(source)}
+                                            checked={data.sources.includes(source.name)}
+                                            onCheckedChange={() => toggleSource(source.name)}
                                         />
-                                        <Label className="font-medium cursor-pointer flex-1">{source}</Label>
+                                        <Label className="font-medium cursor-pointer flex-1 flex items-center gap-2">
+                                            {source.name}
+                                            {source.premium && (
+                                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-700 uppercase tracking-wide">
+                                                    Premium
+                                                </span>
+                                            )}
+                                        </Label>
                                     </div>
                                 ))}
                             </div>
@@ -341,7 +357,7 @@ export function WizardForm() {
                                 <ChevronRight className="w-4 h-4" />
                             </Button>
                         ) : (
-                            <Button onClick={() => setSubmitted(true)} className="gap-2 px-8 bg-green-600 hover:bg-green-700 text-white">
+                            <Button onClick={() => setSubmitted(true)} className="gap-2 px-8">
                                 Finalizar cadastro
                             </Button>
                         )}

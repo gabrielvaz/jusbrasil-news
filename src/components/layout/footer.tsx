@@ -12,9 +12,7 @@ export function Footer() {
                     </p>
                 </div>
                 <div className="flex gap-6 text-sm text-muted-foreground">
-                    <Link href="#" className="hover:text-foreground transition-colors">Termos de Uso</Link>
-                    <Link href="#" className="hover:text-foreground transition-colors">Privacidade</Link>
-                    <Link href="#" className="hover:text-foreground transition-colors">Contato</Link>
+                    {/* Links removed as per request */}
                 </div>
                 <div className="text-sm text-muted-foreground">
                     © {new Date().getFullYear()} Jusbrasil News.
