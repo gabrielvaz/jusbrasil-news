@@ -36,7 +36,7 @@ export function HowItWorks() {
 
                     {steps.map((step, index) => (
                         <div key={index} className="flex flex-col items-center text-center p-6 bg-background rounded-2xl border shadow-sm relative z-10 hover:shadow-md transition-shadow">
-                            <div className="bg-muted p-4 rounded-full mb-4">
+                            <div className="bg-muted p-4 rounded-full mb-4 w-20 h-20 flex items-center justify-center">
                                 {step.icon}
                             </div>
                             <h3 className="text-xl font-bold mb-2">{step.title}</h3>

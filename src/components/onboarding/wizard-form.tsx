@@ -54,9 +54,6 @@ const THEMES_BY_AREA: Record<string, string[]> = {
 
 const SOURCES: Source[] = [
     { name: "Migalhas" },
-    { name: "JOTA", premium: true },
-    { name: "ConJur", premium: true },
-    { name: "Revista LTr", premium: true },
     { name: "Âmbito Jurídico" },
     { name: "Blog Flávio Tartuce" },
     { name: "IBDCivil" },
@@ -64,7 +61,10 @@ const SOURCES: Source[] = [
     { name: "STF (Supremo Tribunal Federal)" },
     { name: "STJ (Superior Tribunal de Justiça)" },
     { name: "TST (Tribunal Superior do Trabalho)" },
-    { name: "Diários Oficiais" }
+    { name: "Diários Oficiais" },
+    { name: "JOTA", premium: true },
+    { name: "ConJur", premium: true },
+    { name: "Revista LTr", premium: true }
 ];
 
 export function WizardForm() {
