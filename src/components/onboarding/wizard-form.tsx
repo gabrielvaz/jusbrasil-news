@@ -8,17 +8,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ChevronRight, ChevronLeft, Check } from "lucide-react";
+import { ChevronRight, ChevronLeft, Check, Briefcase, Gavel, Scale, Building2, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 type FormData = {
     email: string;
+    occupation: string;
+    occupationOther?: string;
     areas: string[];
     themes: Record<string, string[]>;
     sources: string[];
     frequency: "daily" | "weekly";
 };
+
+const OCCUPATIONS = [
+    { id: "advogado", label: "Advogado", icon: Briefcase },
+    { id: "juiz", label: "Juiz", icon: Gavel },
+    { id: "promotor", label: "Promotor", icon: Scale },
+    { id: "departamento", label: "Departamento Jurídico", icon: Building2 },
+    { id: "outro", label: "Outro", icon: User },
+];
 
 type Source = {
     name: string;
@@ -53,6 +63,7 @@ const THEMES_BY_AREA: Record<string, string[]> = {
 };
 
 const SOURCES: Source[] = [
+    { name: "Curadoria Jusbrasil" },
     { name: "Migalhas" },
     { name: "Âmbito Jurídico" },
     { name: "Blog Flávio Tartuce" },
@@ -71,6 +82,7 @@ export function WizardForm() {
     const [step, setStep] = useState(1);
     const [data, setData] = useState<FormData>({
         email: "",
+        occupation: "",
         areas: [],
         themes: {},
         sources: [],
@@ -79,7 +91,7 @@ export function WizardForm() {
 
     const [submitted, setSubmitted] = useState(false);
 
-    const totalSteps = 5;
+    const totalSteps = 6;
     const progress = (step / totalSteps) * 100;
 
     const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps));
@@ -129,7 +141,7 @@ export function WizardForm() {
 
             <div className="min-h-[400px]">
                 <AnimatePresence mode="wait">
-                    {/* Step 1: Email */}
+                    {/* Step 1: Occupation */}
                     {step === 1 && (
                         <motion.div
                             key="step1"
@@ -140,7 +152,57 @@ export function WizardForm() {
                             className="space-y-4"
                         >
                             <div className="space-y-2">
-                                <h2 className="text-2xl font-bold">Vamos começar. Qual é o seu e-mail?</h2>
+                                <h2 className="text-2xl font-bold">Qual é a sua ocupação atual?</h2>
+                                <p className="text-muted-foreground">Isso nos ajuda a selecionar o conteúdo mais relevante para o seu dia a dia.</p>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+                                {OCCUPATIONS.map((occ) => {
+                                    const Icon = occ.icon;
+                                    const isSelected = data.occupation === occ.id;
+                                    return (
+                                        <div
+                                            key={occ.id}
+                                            className={`flex flex-col items-center justify-center space-y-3 border p-6 rounded-lg cursor-pointer transition-all hover:bg-muted/50 ${isSelected ? 'border-primary bg-primary/5 ring-1 ring-primary' : ''}`}
+                                            onClick={() => setData({ ...data, occupation: occ.id })}
+                                        >
+                                            <div className={`p-3 rounded-full ${isSelected ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                                                <Icon className="w-6 h-6" />
+                                            </div>
+                                            <Label className="font-medium cursor-pointer text-center">{occ.label}</Label>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            {data.occupation === "outro" && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: "auto" }}
+                                    className="pt-2"
+                                >
+                                    <Label htmlFor="other-occupation" className="sr-only">Especifique</Label>
+                                    <Input
+                                        id="other-occupation"
+                                        placeholder="Digite sua ocupação..."
+                                        value={data.occupationOther || ""}
+                                        onChange={(e) => setData({ ...data, occupationOther: e.target.value })}
+                                    />
+                                </motion.div>
+                            )}
+                        </motion.div>
+                    )}
+
+                    {/* Step 2: Email */}
+                    {step === 2 && (
+                        <motion.div
+                            key="step2"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3 }}
+                            className="space-y-4"
+                        >
+                            <div className="space-y-2">
+                                <h2 className="text-2xl font-bold">Vamos continuar. Qual é o seu e-mail?</h2>
                                 <p className="text-muted-foreground">É onde você receberá sua curadoria personalizada.</p>
                             </div>
                             <div className="pt-4">
@@ -160,10 +222,10 @@ export function WizardForm() {
                         </motion.div>
                     )}
 
-                    {/* Step 2: Areas */}
-                    {step === 2 && (
+                    {/* Step 3: Areas */}
+                    {step === 3 && (
                         <motion.div
-                            key="step2"
+                            key="step3"
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
@@ -171,8 +233,8 @@ export function WizardForm() {
                             className="space-y-4"
                         >
                             <div className="space-y-2">
-                                <h2 className="text-2xl font-bold">Quais são suas áreas de atuação?</h2>
-                                <p className="text-muted-foreground">Selecione todas que se aplicam.</p>
+                                <h2 className="text-2xl font-bold">Quais áreas você tem interesse em ser informado na Jusbrasil News?</h2>
+                                <p className="text-muted-foreground">Selecione as áreas para personalizar sua curadoria.</p>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                                 {AREAS.map((area) => (
@@ -192,10 +254,10 @@ export function WizardForm() {
                         </motion.div>
                     )}
 
-                    {/* Step 3: Themes */}
-                    {step === 3 && (
+                    {/* Step 4: Themes */}
+                    {step === 4 && (
                         <motion.div
-                            key="step3"
+                            key="step4"
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
@@ -237,8 +299,8 @@ export function WizardForm() {
                         </motion.div>
                     )}
 
-                    {/* Step 4: Sources */}
-                    {step === 4 && (
+                    {/* Step 5: Sources */}
+                    {step === 5 && (
                         <motion.div
                             key="step4"
                             initial={{ opacity: 0, x: 20 }}
@@ -276,8 +338,8 @@ export function WizardForm() {
                         </motion.div>
                     )}
 
-                    {/* Step 5: Frequency & Confirmation */}
-                    {step === 5 && (
+                    {/* Step 6: Frequency & Confirmation */}
+                    {step === 6 && (
                         <motion.div
                             key="step5"
                             initial={{ opacity: 0, x: 20 }}
@@ -350,7 +412,7 @@ export function WizardForm() {
 
 import confetti from "canvas-confetti";
 import { useEffect, useMemo } from "react";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, CheckCircle } from "lucide-react";
 
 function EmailPreview({ data }: { data: FormData }) {
     useEffect(() => {
@@ -392,12 +454,14 @@ function EmailPreview({ data }: { data: FormData }) {
         >
             <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 text-green-600 mb-6">
-                    <Check className="w-10 h-10" />
+                    <CheckCircle className="w-10 h-10" />
                 </div>
-                <h2 className="text-3xl font-bold mb-4">Tudo pronto!</h2>
+                <h2 className="text-3xl font-bold mb-4">Bem vindo ao Jusbrasil News</h2>
                 <div className="text-lg text-muted-foreground max-w-lg mx-auto space-y-2">
-                    <p>Excelente escolha. Personalizamos sua experiência.</p>
-                    <p className="font-medium text-foreground bg-yellow-100 border-yellow-200 border p-3 rounded-md text-base">
+                    <p>
+                        Você receberá seu resumo {data.frequency === 'daily' ? 'diário' : 'semanal'} com as principais novidades.
+                    </p>
+                    <p className="font-medium text-foreground bg-yellow-100 border-yellow-200 border p-3 rounded-md text-base mt-2">
                         ⚠️ Para começar a receber, você precisa confirmar sua inscrição clicando no link que enviamos para o seu e-mail.
                     </p>
                 </div>
@@ -450,7 +514,7 @@ function EmailPreview({ data }: { data: FormData }) {
                 {emailProviderUrl && (
                     <div className="pt-6 border-t flex justify-center">
                         <Link href={emailProviderUrl} target="_blank" rel="noopener noreferrer">
-                            <Button className="gap-2 w-full md:w-auto" size="lg">
+                            <Button variant="outline" className="gap-2 w-full md:w-auto" size="lg">
                                 Ir para o E-mail
                                 <ExternalLink className="w-4 h-4" />
                             </Button>
@@ -459,11 +523,10 @@ function EmailPreview({ data }: { data: FormData }) {
                 )}
             </div>
 
-            <div className="flex justify-center mt-12">
-                <Link href="/">
-                    <Button variant="ghost" className="gap-2 text-muted-foreground hover:text-foreground">
-                        <ChevronLeft className="w-4 h-4" />
-                        Voltar ao início
+            <div className="flex justify-center mt-8">
+                <Link href="https://www.jusbrasil.com.br">
+                    <Button size="lg" className="px-12 h-14 text-lg">
+                        Ir para o Jusbrasil
                     </Button>
                 </Link>
             </div>
