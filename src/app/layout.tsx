@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Jusbrasil News",
-  description: "Curadoria informativa automática para advogados.",
+  title: "Jusbrasil News - Sua curadoria jurídica personalizada",
+  description: "Receba as notícias jurídicas que realmente importam. Personalize sua newsletter por área de atuação e fontes.",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({

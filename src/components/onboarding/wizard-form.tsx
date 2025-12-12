@@ -312,27 +312,7 @@ export function WizardForm() {
                                 </label>
                             </RadioGroup>
 
-                            <div className="pt-6 border-t mt-6">
-                                <h3 className="font-semibold mb-4">Resumo das suas preferências:</h3>
-                                <ul className="space-y-2 text-sm text-muted-foreground">
-                                    <li className="flex justify-between">
-                                        <span>E-mail:</span>
-                                        <span className="font-medium text-foreground">{data.email}</span>
-                                    </li>
-                                    <li className="flex justify-between">
-                                        <span>Áreas:</span>
-                                        <span className="font-medium text-foreground">{data.areas.join(", ")}</span>
-                                    </li>
-                                    <li className="flex justify-between">
-                                        <span>Fontes:</span>
-                                        <span className="font-medium text-foreground">{data.sources.join(", ")}</span>
-                                    </li>
-                                    <li className="flex justify-between">
-                                        <span>Frequência:</span>
-                                        <span className="font-medium text-foreground uppercase">{data.frequency === 'daily' ? 'Diário' : 'Semanal'}</span>
-                                    </li>
-                                </ul>
-                            </div>
+
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -369,7 +349,8 @@ export function WizardForm() {
 }
 
 import confetti from "canvas-confetti";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { ExternalLink } from "lucide-react";
 
 function EmailPreview({ data }: { data: FormData }) {
     useEffect(() => {
@@ -395,6 +376,14 @@ function EmailPreview({ data }: { data: FormData }) {
         return () => clearInterval(interval);
     }, []);
 
+    const emailProviderUrl = useMemo(() => {
+        const email = data.email.toLowerCase();
+        if (email.includes("@gmail.com")) return "https://mail.google.com/";
+        if (email.includes("@outlook.com") || email.includes("@hotmail.com") || email.includes("@live.com")) return "https://outlook.live.com/";
+        if (email.includes("@yahoo.com")) return "https://mail.yahoo.com/";
+        return null;
+    }, [data.email]);
+
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -406,9 +395,12 @@ function EmailPreview({ data }: { data: FormData }) {
                     <Check className="w-10 h-10" />
                 </div>
                 <h2 className="text-3xl font-bold mb-4">Tudo pronto!</h2>
-                <p className="text-lg text-muted-foreground max-w-lg mx-auto">
-                    Excelente escolha. Personalizamos sua experiência com os dados abaixo:
-                </p>
+                <div className="text-lg text-muted-foreground max-w-lg mx-auto space-y-2">
+                    <p>Excelente escolha. Personalizamos sua experiência.</p>
+                    <p className="font-medium text-foreground bg-yellow-100 border-yellow-200 border p-3 rounded-md text-base">
+                        ⚠️ Para começar a receber, você precisa confirmar sua inscrição clicando no link que enviamos para o seu e-mail.
+                    </p>
+                </div>
             </div>
 
             <div className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm overflow-hidden p-6 md:p-8 space-y-6">
@@ -439,19 +431,32 @@ function EmailPreview({ data }: { data: FormData }) {
                             </div>
                         </div>
                         <div className="border-t pt-4 mt-2">
-                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Exemplo de Assunto</p>
-                            <p className="text-sm text-gray-600 italic mt-1">
-                                "Resumo {data.frequency === 'daily' ? 'Diário' : 'Semanal'}: Destaques em {data.areas[0] || 'Direito'} para você"
-                            </p>
+                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Fontes Selecionadas</p>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                                {data.sources.length > 0 ? (
+                                    data.sources.map(source => (
+                                        <span key={source} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                            {source}
+                                        </span>
+                                    ))
+                                ) : (
+                                    <span className="text-gray-500">Nenhuma fonte selecionada</span>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="pt-6 border-t flex justify-center">
-                    <p className="text-sm text-center text-muted-foreground">
-                        Enviamos um e-mail de confirmação para sua caixa de entrada.
-                    </p>
-                </div>
+                {emailProviderUrl && (
+                    <div className="pt-6 border-t flex justify-center">
+                        <Link href={emailProviderUrl} target="_blank" rel="noopener noreferrer">
+                            <Button className="gap-2 w-full md:w-auto" size="lg">
+                                Ir para o E-mail
+                                <ExternalLink className="w-4 h-4" />
+                            </Button>
+                        </Link>
+                    </div>
+                )}
             </div>
 
             <div className="flex justify-center mt-12">

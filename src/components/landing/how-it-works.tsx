@@ -4,17 +4,17 @@ import { Target, Newspaper, Mail, ArrowRight } from "lucide-react";
 export function HowItWorks() {
     const steps = [
         {
-            icon: <Target className="w-12 h-12 text-primary mb-4" />,
+            icon: <Target className="w-12 h-12 text-primary" />,
             title: "1. Defina seus interesses",
             description: "Selecione suas áreas de atuação (Civil, Trabalhista, Tributário, etc.) e os temas específicos que importam para você."
         },
         {
-            icon: <Newspaper className="w-12 h-12 text-primary mb-4" />,
+            icon: <Newspaper className="w-12 h-12 text-primary" />,
             title: "2. Escolha suas fontes",
             description: "Indique de quais tribunais, portais de notícias e diários oficiais você deseja receber atualizações."
         },
         {
-            icon: <Mail className="w-12 h-12 text-primary mb-4" />,
+            icon: <Mail className="w-12 h-12 text-primary" />,
             title: "3. Receba por e-mail",
             description: "Diariamente ou semanalmente, entregamos um resumo curado direto na sua caixa de entrada. Sem spam, sem ruído."
         }
